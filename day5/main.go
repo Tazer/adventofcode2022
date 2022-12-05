@@ -43,91 +43,7 @@ func main() {
 		log.Fatal(err)
 	}
 	moves := ParseMoves(inputs)
-
-	stacks := map[int]*Stack{}
-
-	stack1 := Stack{}
-	stack1.Push("N")
-	stack1.Push("D")
-	stack1.Push("M")
-	stack1.Push("Q")
-	stack1.Push("B")
-	stack1.Push("P")
-	stack1.Push("Z")
-	stacks[1] = &stack1
-
-	stack2 := Stack{}
-	stack2.Push("C")
-	stack2.Push("L")
-	stack2.Push("Z")
-	stack2.Push("Q")
-	stack2.Push("M")
-	stack2.Push("D")
-	stack2.Push("H")
-	stack2.Push("V")
-	stacks[2] = &stack2
-
-	stack3 := Stack{}
-	stack3.Push("Q")
-	stack3.Push("H")
-	stack3.Push("R")
-	stack3.Push("D")
-	stack3.Push("V")
-	stack3.Push("F")
-	stack3.Push("Z")
-	stack3.Push("G")
-	stacks[3] = &stack3
-
-	stack4 := Stack{}
-	stack4.Push("H")
-	stack4.Push("G")
-	stack4.Push("D")
-	stack4.Push("F")
-	stack4.Push("N")
-	stacks[4] = &stack4
-
-	stack5 := Stack{}
-	stack5.Push("N")
-	stack5.Push("F")
-	stack5.Push("Q")
-	stacks[5] = &stack5
-
-	stack6 := Stack{}
-	stack6.Push("D")
-	stack6.Push("Q")
-	stack6.Push("V")
-	stack6.Push("Z")
-	stack6.Push("F")
-	stack6.Push("B")
-	stack6.Push("T")
-	stacks[6] = &stack6
-
-	stack7 := Stack{}
-	stack7.Push("Q")
-	stack7.Push("M")
-	stack7.Push("T")
-	stack7.Push("Z")
-	stack7.Push("D")
-	stack7.Push("V")
-	stack7.Push("S")
-	stack7.Push("H")
-	stacks[7] = &stack7
-
-	stack8 := Stack{}
-	stack8.Push("M")
-	stack8.Push("G")
-	stack8.Push("F")
-	stack8.Push("P")
-	stack8.Push("N")
-	stack8.Push("Q")
-	stacks[8] = &stack8
-
-	stack9 := Stack{}
-	stack9.Push("B")
-	stack9.Push("W")
-	stack9.Push("R")
-	stack9.Push("M")
-	stacks[9] = &stack9
+	stacks := ParseStacks(stackInputs)
 
 	s := NewShip(stacks, moves)
 
@@ -136,106 +52,43 @@ func main() {
 	top := s.GetTopCrates()
 
 	log.Printf("Top crates %s", top)
+	stacks2 := ParseStacks(stackInputs)
+	s2 := NewShip(stacks2, moves)
 
-	top2 := Run2(moves)
+	s2.MoveCrates2()
+	top2 := s2.GetTopCrates()
 
 	log.Printf("Top crates2 %s", top2)
 
 }
 
-func Run2(moves []Move) string {
+func ParseStacks(input []string) map[int]*Stack {
 	stacks := map[int]*Stack{}
 
-	stack1 := Stack{}
-	stack1.Push("N")
-	stack1.Push("D")
-	stack1.Push("M")
-	stack1.Push("Q")
-	stack1.Push("B")
-	stack1.Push("P")
-	stack1.Push("Z")
-	stacks[1] = &stack1
+	lastLine := input[len(input)-1]
 
-	stack2 := Stack{}
-	stack2.Push("C")
-	stack2.Push("L")
-	stack2.Push("Z")
-	stack2.Push("Q")
-	stack2.Push("M")
-	stack2.Push("D")
-	stack2.Push("H")
-	stack2.Push("V")
-	stacks[2] = &stack2
+	numberOfStacks, _ := strconv.Atoi(string(lastLine[len(lastLine)-1]))
 
-	stack3 := Stack{}
-	stack3.Push("Q")
-	stack3.Push("H")
-	stack3.Push("R")
-	stack3.Push("D")
-	stack3.Push("V")
-	stack3.Push("F")
-	stack3.Push("Z")
-	stack3.Push("G")
-	stacks[3] = &stack3
+	for i := 1; i <= numberOfStacks; i++ {
+		stacks[i] = &Stack{}
+	}
 
-	stack4 := Stack{}
-	stack4.Push("H")
-	stack4.Push("G")
-	stack4.Push("D")
-	stack4.Push("F")
-	stack4.Push("N")
-	stacks[4] = &stack4
+	for _, l := range input[:len(input)-1] {
+		stackPosition := 1
+		for s := 1; s <= numberOfStacks; s++ {
+			if len(l) < stackPosition {
+				break
+			}
 
-	stack5 := Stack{}
-	stack5.Push("N")
-	stack5.Push("F")
-	stack5.Push("Q")
-	stacks[5] = &stack5
+			if string(l[stackPosition]) != " " {
+				stacks[s].Append(string(l[stackPosition]))
+			}
+			stackPosition += 4
 
-	stack6 := Stack{}
-	stack6.Push("D")
-	stack6.Push("Q")
-	stack6.Push("V")
-	stack6.Push("Z")
-	stack6.Push("F")
-	stack6.Push("B")
-	stack6.Push("T")
-	stacks[6] = &stack6
+		}
+	}
 
-	stack7 := Stack{}
-	stack7.Push("Q")
-	stack7.Push("M")
-	stack7.Push("T")
-	stack7.Push("Z")
-	stack7.Push("D")
-	stack7.Push("V")
-	stack7.Push("S")
-	stack7.Push("H")
-	stacks[7] = &stack7
-
-	stack8 := Stack{}
-	stack8.Push("M")
-	stack8.Push("G")
-	stack8.Push("F")
-	stack8.Push("P")
-	stack8.Push("N")
-	stack8.Push("Q")
-	stacks[8] = &stack8
-
-	stack9 := Stack{}
-	stack9.Push("B")
-	stack9.Push("W")
-	stack9.Push("R")
-	stack9.Push("M")
-	stacks[9] = &stack9
-
-	s := NewShip(stacks, moves)
-
-	s.MoveCrates2()
-
-	top := s.GetTopCrates()
-
-	return top
+	return stacks
 }
 
 var moveExp = regexp.MustCompile(`move (?P<crates>\d+) from (?P<from>\d+) to (?P<to>\d+)`)
@@ -313,6 +166,10 @@ func (s *Stack) Pop(n int) []string {
 	p := s.list[0:n]
 	s.list = s.list[n:]
 	return p
+}
+
+func (s *Stack) Append(input string) {
+	s.list = append(s.list, input)
 }
 
 func (s *Stack) Push(input string) {

@@ -18,24 +18,16 @@ func TestGame(t *testing.T) {
 		"move 1 from 1 to 2",
 	}
 
+	stackInputs := []string{
+		"    [D]    ",
+		"[N] [C]    ",
+		"[Z] [M] [P]",
+		" 1   2   3",
+	}
+
 	m := ParseMoves(inputs)
 
-	stacks := map[int]*Stack{}
-
-	stack1 := Stack{}
-	stack1.Push("Z")
-	stack1.Push("N")
-	stacks[1] = &stack1
-
-	stack2 := Stack{}
-	stack2.Push("M")
-	stack2.Push("C")
-	stack2.Push("D")
-	stacks[2] = &stack2
-
-	stack3 := Stack{}
-	stack3.Push("P")
-	stacks[3] = &stack3
+	stacks := ParseStacks(stackInputs)
 
 	s := NewShip(stacks, m)
 
@@ -87,4 +79,21 @@ func TestGame2(t *testing.T) {
 
 	assert.Equal(t, "MCD", res)
 
+}
+
+func TestParseStack(t *testing.T) {
+	inputs := []string{
+		"    [D]    ",
+		"[N] [C]    ",
+		"[Z] [M] [P]",
+		" 1   2   3 ",
+		//"move 1 from 2 to 1",
+		//"move 3 from 1 to 3",
+		//"move 2 from 2 to 1",
+		//"move 1 from 1 to 2",
+	}
+
+	stacks := ParseStacks(inputs)
+
+	assert.Equal(t, "N", stacks[1].Peek())
 }
