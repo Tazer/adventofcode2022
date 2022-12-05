@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"flag"
 	"log"
 	"os"
@@ -260,10 +259,6 @@ func ParseMoves(input []string) []Move {
 		moves = append(moves, Move{Crates: res["crates"], To: res["to"], From: res["from"]})
 	}
 
-	m, _ := json.Marshal(moves)
-	log.Println("Moves")
-	log.Print(string(m))
-
 	return moves
 }
 
@@ -285,10 +280,6 @@ func (s *Ship) MoveCrates() {
 			f := s.Stacks[m.From].Pop(1)
 			s.Stacks[m.To].PushM(f)
 		}
-		log.Printf("Move executed %+v \n", m)
-		for k, v := range s.Stacks {
-			log.Printf("Stack %d top: %s \n", k, v.Peek())
-		}
 	}
 
 }
@@ -297,11 +288,6 @@ func (s *Ship) MoveCrates2() {
 	for _, m := range s.Moves {
 		f := s.Stacks[m.From].Pop(m.Crates)
 		s.Stacks[m.To].PushM(f)
-
-		log.Printf("Move executed %+v \n", m)
-		for k, v := range s.Stacks {
-			log.Printf("Stack %d top: %s \n", k, v.Peek())
-		}
 	}
 
 }
@@ -326,7 +312,6 @@ func (s *Stack) Pop(n int) []string {
 	}
 	p := s.list[0:n]
 	s.list = s.list[n:]
-	log.Printf("PoP: %s", p)
 	return p
 }
 
