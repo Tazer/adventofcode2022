@@ -17,4 +17,6 @@ func TestForest(t *testing.T) {
 	f := NewForest(inputs)
 
 	assert.Equal(t, 21, f.FindVisibleTrees())
+
+	assert.Equal(t, 8, f.FindMostScenicTree())
 }

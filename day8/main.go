@@ -36,6 +36,8 @@ func main() {
 
 	log.Printf("visible trees %d", f.FindVisibleTrees())
 
+	log.Printf("scenic trees %d", f.FindMostScenicTree())
+
 }
 
 func NewForest(inputs []string) *Forest {
@@ -66,56 +68,124 @@ func (f *Forest) IsVisible(y, x, h int) bool {
 	rightVisible := true
 	bottomVisible := true
 
-	for y2 := y - 1; y2 >= 0; y2-- {
-		if h < f.Trees[y2][x] {
+	for yTop := y - 1; yTop >= 0; yTop-- {
+		if h <= f.Trees[yTop][x] {
 			topVisible = false
 			break
 		}
 	}
 	//CHECK LEFT
-	for x2 := x - 1; x2 >= 0; x2-- {
-		if h < f.Trees[y][x2] {
+
+	for xLeft := x - 1; xLeft >= 0; xLeft-- {
+		if h <= f.Trees[y][xLeft] {
 			leftVisible = false
 			break
 		}
 	}
 	//TODO: CHECK RIGHT
-	x2 := x + 1
+	xRight := x + 1
 	for {
-		if _, ok := f.Trees[y][x2]; !ok {
+		if _, ok := f.Trees[y][xRight]; !ok {
 			break
 		}
 
-		if h < f.Trees[y][x2] {
+		if h <= f.Trees[y][xRight] {
 			rightVisible = false
 			break
 		}
-		x2++
+		xRight++
 	}
 	//TODO: CHECK BOTTOM
-	y2 := y + 1
+	yBottom := y + 1
 	for {
-		if _, ok := f.Trees[y2][x]; !ok {
+		if _, ok := f.Trees[yBottom][x]; !ok {
 			break
 		}
 
-		if h < f.Trees[y2][x] {
+		if h <= f.Trees[yBottom][x] {
 			bottomVisible = false
 			break
 		}
-		y2++
+		yBottom++
 	}
-	return topVisible || leftVisible || rightVisible || bottomVisible
+
+	if topVisible {
+		return true
+	}
+
+	if leftVisible {
+		return true
+	}
+
+	if rightVisible {
+		return true
+	}
+
+	if bottomVisible {
+		return true
+	}
+
+	return false
+}
+
+func (f *Forest) GetScenicScore(y, x, h int) int {
+	topScore := 0
+	leftScore := 0
+	rightScore := 0
+	bottomScore := 0
+
+	for yTop := y - 1; yTop >= 0; yTop-- {
+		if h <= f.Trees[yTop][x] {
+			topScore++
+			break
+		}
+		topScore++
+	}
+	//CHECK LEFT
+
+	for xLeft := x - 1; xLeft >= 0; xLeft-- {
+		if h <= f.Trees[y][xLeft] {
+			leftScore++
+			break
+		}
+		leftScore++
+	}
+	//TODO: CHECK RIGHT
+	xRight := x + 1
+	for {
+		if _, ok := f.Trees[y][xRight]; !ok {
+			break
+		}
+
+		if h <= f.Trees[y][xRight] {
+			rightScore++
+			break
+		}
+		xRight++
+		rightScore++
+	}
+	//TODO: CHECK BOTTOM
+	yBottom := y + 1
+	for {
+		if _, ok := f.Trees[yBottom][x]; !ok {
+			break
+		}
+
+		if h <= f.Trees[yBottom][x] {
+			bottomScore++
+			break
+		}
+		yBottom++
+		bottomScore++
+	}
+
+	return topScore * leftScore * rightScore * bottomScore
 }
 
 func (f *Forest) FindVisibleTrees() int {
 	total := 0
 	for k, v := range f.Trees {
 		for k2, v2 := range v {
-			if k2 == 0 || k == 0 {
-				total++
-				continue
-			}
 			if f.IsVisible(k, k2, v2) {
 				total++
 			}
@@ -123,4 +193,16 @@ func (f *Forest) FindVisibleTrees() int {
 	}
 
 	return total
+}
+func (f *Forest) FindMostScenicTree() int {
+	highScore := 0
+	for k, v := range f.Trees {
+		for k2, v2 := range v {
+			treeScore := f.GetScenicScore(k, k2, v2)
+			if treeScore > highScore {
+				highScore = treeScore
+			}
+		}
+	}
+	return highScore
 }
